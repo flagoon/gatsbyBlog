@@ -1,7 +1,7 @@
 import React from "react";
 
-export default (props) => <div>{props.data}</div>;
-
-const zupe = (parens) => {
-  return typeof parens;
+const error = (): JSX.Element => {
+  return <div>Hello World</div>;
 };
+
+export default error;
