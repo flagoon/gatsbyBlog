@@ -1,7 +1,12 @@
-import React from "react";
+import React from 'react';
+import Layout from '../components/Layout';
 
-const error = (): JSX.Element => {
-  return <div>Hello World</div>;
+const Index = (): JSX.Element => {
+  return (
+    <Layout>
+      <div>Hello World</div>
+    </Layout>
+  );
 };
 
-export default error;
+export default Index;
