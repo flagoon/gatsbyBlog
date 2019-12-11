@@ -7,6 +7,7 @@
  */
 
 const resolve = require('path').resolve;
+const { createFilePath } = require('gatsby-source-filesystem');
 
 // This function is called on creating a node. Useful when we want to
 // extract some data from node or create new node values.
@@ -14,8 +15,8 @@ const resolve = require('path').resolve;
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions;
   if (node.internal.type === 'MarkdownRemark') {
-    const fileName = getNode(node.parent);
-    const slug = fileName.relativeDirectory.split('/')[1];
+    const slug = createFilePath({ node, getNode, basePath: `articles` });
+    console.log(slug);
     // It's creating new node, which name is 'slug', the value is slug (duh)
     // and parent is 'fields' in 'node' from parameters.
     createNodeField({
@@ -28,6 +29,12 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
 
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;
+
+  createPage({
+    path: '/',
+    component: resolve('./src/templates/blog-index.tsx'),
+  });
+
   const result = await graphql(`
     query {
       allMarkdownRemark {
