@@ -1,5 +1,5 @@
 import React from 'react';
-import { graphql } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 import Layout from '../components/Layout';
 
 interface Data {
@@ -11,15 +11,33 @@ interface Data {
       html: string;
     };
   };
+  pageContext: {
+    slug: string;
+    nextSlug: {
+      slug: string;
+      title: string;
+    };
+    previousSlug: {
+      slug: string;
+      title: string;
+    };
+  };
 }
 
-const blogPost = ({ data }: Data): JSX.Element => {
+const blogPost = ({ data, pageContext }: Data): JSX.Element => {
   const post = data.markdownRemark;
+  const { nextSlug, previousSlug } = pageContext;
+  console.log(pageContext);
   return (
     <Layout>
       <div>
         <h1>{post.frontmatter.title}</h1>
         <div dangerouslySetInnerHTML={{ __html: post.html }} />
+        <div>
+          {previousSlug ? <Link to={previousSlug.slug}>{previousSlug.title}</Link> : null}
+          <span>---</span>
+          {nextSlug ? <Link to={nextSlug.slug}>{nextSlug.title}</Link> : null}
+        </div>
       </div>
     </Layout>
   );

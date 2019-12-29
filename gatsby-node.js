@@ -16,7 +16,6 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions;
   if (node.internal.type === 'MarkdownRemark') {
     const slug = createFilePath({ node, getNode, basePath: `articles` });
-    console.log(slug);
     // It's creating new node, which name is 'slug', the value is slug (duh)
     // and parent is 'fields' in 'node' from parameters.
     createNodeField({
@@ -28,20 +27,44 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
 };
 
 exports.createPages = async ({ graphql, actions }) => {
-  const { createPage } = actions;
+  const { createPage, createRedirect } = actions;
+
+  createRedirect({ fromPath: '/', toPath: '/home', isPermanent: true, redirectInBrowser: true });
 
   createPage({
-    path: '/',
+    path: '/home',
     component: resolve('./src/templates/blog-index.tsx'),
   });
 
   const result = await graphql(`
     query {
-      allMarkdownRemark {
+      allMarkdownRemark(sort: { fields: frontmatter___date }) {
         edges {
+          next {
+            fields {
+              slug
+            }
+            frontmatter {
+              title
+            }
+          }
           node {
             fields {
               slug
+            }
+            frontmatter {
+              title
+              description
+              date(fromNow: true)
+            }
+            html
+          }
+          previous {
+            fields {
+              slug
+            }
+            frontmatter {
+              title
             }
           }
         }
@@ -52,7 +75,15 @@ exports.createPages = async ({ graphql, actions }) => {
   // path: the path from browser where the page will be placed
   // component: from what component page will be created. A little bit of magic!
   // context: data passed to page queries as graphql variables.
-  result.data.allMarkdownRemark.edges.forEach(({ node }) => {
+  result.data.allMarkdownRemark.edges.forEach(({ node, next, previous }) => {
+    let nextSlug;
+    let previousSlug;
+    if (next && next.fields && next.fields.slug) {
+      nextSlug = { slug: next.fields.slug, title: next.frontmatter.title };
+    }
+    if (previous && previous.fields && previous.fields.slug) {
+      previousSlug = { slug: previous.fields.slug, title: previous.frontmatter.title };
+    }
     createPage({
       path: node.fields.slug,
       component: resolve(`./src/templates/blog-post.tsx`),
@@ -60,6 +91,8 @@ exports.createPages = async ({ graphql, actions }) => {
         // Data passed to context is available
         // in page queries as GraphQL variables.
         slug: node.fields.slug,
+        nextSlug,
+        previousSlug,
       },
     });
   });

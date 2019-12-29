@@ -22,7 +22,6 @@ const BlogIndexTemplate = ({ data }: Props): JSX.Element => {
   const articleList = data.allMarkdownRemark.edges.map((node: Node) => {
     const frontmatter = get(node, 'node.frontmatter');
     const fields = get(node, 'node.fields');
-    console.log(fields);
     return (
       <div key={fields.slug}>
         <Link to={fields.slug}>
@@ -32,7 +31,11 @@ const BlogIndexTemplate = ({ data }: Props): JSX.Element => {
       </div>
     );
   });
-  return <Layout>{articleList}</Layout>;
+  return (
+    <Layout>
+      <>{articleList}</>
+    </Layout>
+  );
 };
 
 export default BlogIndexTemplate;
