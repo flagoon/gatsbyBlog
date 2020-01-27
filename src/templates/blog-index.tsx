@@ -18,9 +18,12 @@ interface Props {
   };
 }
 
-const BlogIndexTemplate = ({ data }: Props): JSX.Element => {
+const BlogIndexTemplate = (props: Props): JSX.Element => {
+  console.log(props);
+  const { data } = props;
   const articleList = data.allMarkdownRemark.edges.map((node: Node) => {
     const frontmatter = get(node, 'node.frontmatter');
+    console.warn(frontmatter);
     const fields = get(node, 'node.fields');
     return (
       <div key={fields.slug}>
@@ -49,6 +52,13 @@ export const query = graphql`
             date
             description
             title
+            featuredImage {
+              childImageSharp {
+                fluid(maxWidth: 800) {
+                  ...GatsbyImageSharpFluid
+                }
+              }
+            }
           }
           fields {
             slug

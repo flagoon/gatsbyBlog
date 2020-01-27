@@ -2,7 +2,7 @@
 title: 'First'
 date: '2017-08-09'
 description: 'First testing article'
-featuredImage: yoda.jpg
+featuredImage: 'hacktoberfest.png'
 ---
 
 ## Pandas are really sweet.

@@ -1,9 +1,11 @@
 ---
 title: 'Second'
-date: '2017-08-10'
-description: 'First testing article'
+date: '2017-08-09'
+description: 'Second testing article'
+featuredImage: 'hacktoberfest.png'
 ---
 
-##This is the second article
+## Pandas are really sweet.
 
+![Drag Racing](hacktoberfest.png)
 Here's a video of a panda eating sweets.

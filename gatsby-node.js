@@ -31,11 +31,21 @@ exports.createPages = async ({ graphql, actions }) => {
 
   createRedirect({ fromPath: '/', toPath: '/home', isPermanent: true, redirectInBrowser: true });
 
+  /**
+   * This invocation is creating index page. For path /home it's using blog-index.tsx component.
+   * This is the only part here that is connected to index page. Everything else is handled
+   * on blog-index.tsx file. Index page has its own graphql queries.
+   */
   createPage({
     path: '/home',
     component: resolve('./src/templates/blog-index.tsx'),
   });
 
+  /**
+   * This is the part for blog-post pages. This query is ONLY for getting data for 'createPage'
+   * function for pages. It has nothing to do with previous create page. We are asking only for
+   * data we will be sending to he blog-post props!!
+   */
   const result = await graphql(`
     query {
       allMarkdownRemark(sort: { fields: frontmatter___date }) {
@@ -54,10 +64,8 @@ exports.createPages = async ({ graphql, actions }) => {
             }
             frontmatter {
               title
-              description
-              date(fromNow: true)
             }
-            html
+            id
           }
           previous {
             fields {
@@ -74,7 +82,7 @@ exports.createPages = async ({ graphql, actions }) => {
   // here we create a page for every node we query for. 'createPage' needs 3 arguments.
   // path: the path from browser where the page will be placed
   // component: from what component page will be created. A little bit of magic!
-  // context: data passed to page queries as graphql variables.
+  // context: data passed to page queries as graphql variables, but also as props.
   result.data.allMarkdownRemark.edges.forEach(({ node, next, previous }) => {
     let nextSlug;
     let previousSlug;
@@ -84,15 +92,25 @@ exports.createPages = async ({ graphql, actions }) => {
     if (previous && previous.fields && previous.fields.slug) {
       previousSlug = { slug: previous.fields.slug, title: previous.frontmatter.title };
     }
+    /**
+     * We are creating page for EVERY edge in allMarkdownRemark.
+     */
     createPage({
       path: node.fields.slug,
       component: resolve(`./src/templates/blog-post.tsx`),
       context: {
-        // Data passed to context is available
-        // in page queries as GraphQL variables.
+        /**
+         * This part is very important. Context is something we are sending to EVERY page created.
+         * Thanks to that, we could use this data as props. Normally blog-post component is
+         * querying for its data by it self, but it has to know, for what node it has to query.
+         * Data from context is available in graphQL query as variables, so we use id as indicator
+         * for what we are asking. This is also available in props.pageContext if we need to use
+         * it in component directly.
+         */
         slug: node.fields.slug,
         nextSlug,
         previousSlug,
+        id: node.id,
       },
     });
   });

@@ -4,15 +4,17 @@ module.exports = {
     description: `My personal blog for the stuff I'm learning`,
   },
   plugins: [
+    'gatsby-plugin-sharp',
+    'gatsby-transformer-sharp',
     // plugin for loading all files from path into graphql.
     {
       resolve: 'gatsby-source-filesystem',
-      options: { name: `src`, path: `${__dirname}/src/` },
+      options: { name: `src`, path: `${__dirname}/src/articles` },
     },
-    // plugin for loading all files from path into graphql.
+    // thanks to this trickery, relative path for the images are just file names.
     {
       resolve: 'gatsby-source-filesystem',
-      options: { name: `images`, path: `${__dirname}/src/` },
+      options: { name: `images`, path: `${__dirname}/src/images` },
     },
     // plugin for transforming Markdown files, multiple config files can be added for using images,
     // code highlight etc in Markdown. In graphql, allMarkdownRemark and markdownRemark are created
@@ -22,6 +24,7 @@ module.exports = {
       options: {
         plugins: [
           {
+            // plugin for showing images from markdown.
             resolve: `gatsby-remark-images`,
             options: {
               // It's important to specify the maxWidth (in pixels) of
@@ -33,8 +36,6 @@ module.exports = {
         ],
       },
     },
-    'gatsby-plugin-sharp',
-    'gatsby-transformer-sharp',
     // plugin for using typescript with gatsby.
     'gatsby-plugin-typescript',
     // plugin for using styled-components in gatsby.
