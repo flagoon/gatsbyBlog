@@ -2,6 +2,7 @@ import React from 'react';
 import Layout from '../components/Layout';
 import { graphql, Link } from 'gatsby';
 import get from 'lodash/get';
+import Gif from '../articles/first-testing-article/giphy.gif';
 
 interface Node {
   node: {
@@ -19,7 +20,6 @@ interface Props {
 }
 
 const BlogIndexTemplate = (props: Props): JSX.Element => {
-  console.log(props);
   const { data } = props;
   const articleList = data.allMarkdownRemark.edges.map((node: Node) => {
     const frontmatter = get(node, 'node.frontmatter');
