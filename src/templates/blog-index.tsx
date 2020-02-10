@@ -2,7 +2,6 @@ import React from 'react';
 import Layout from '../components/Layout';
 import { graphql, Link } from 'gatsby';
 import get from 'lodash/get';
-import Gif from '../articles/first-testing-article/giphy.gif';
 
 interface Node {
   node: {
@@ -45,7 +44,7 @@ export default BlogIndexTemplate;
 
 export const query = graphql`
   query {
-    allMarkdownRemark(sort: { fields: frontmatter___date }) {
+    allMarkdownRemark(sort: { fields: frontmatter___date, order: DESC }) {
       edges {
         node {
           frontmatter {
