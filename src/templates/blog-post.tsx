@@ -2,12 +2,14 @@ import React from 'react';
 import { graphql, Link } from 'gatsby';
 import Layout from '../components/Layout';
 import Img from 'gatsby-image';
+import { FeaturedImage, ImageSignature } from '../components/Pictures/FeaturedImage';
 
 interface Props {
   data: {
     markdownRemark: {
       frontmatter: {
         title: string;
+        featureImageDescription: string;
         featuredImage: {
           childImageSharp: {
             fluid: {
@@ -51,8 +53,11 @@ const blogPost = ({ data, pageContext }: Props): JSX.Element => {
     <Layout>
       <div>
         <h1>{post.frontmatter.title}</h1>
-        <Img fluid={post.frontmatter.featuredImage.childImageSharp.fluid} />
-        <div dangerouslySetInnerHTML={{ __html: post.html }} />
+        <FeaturedImage fluid={post.frontmatter.featuredImage.childImageSharp.fluid} />
+        {post.frontmatter.featureImageDescription ? (
+          <ImageSignature align="right">{post.frontmatter.featureImageDescription}</ImageSignature>
+        ) : null}
+        <div style={{ marginTop: '1rem' }} dangerouslySetInnerHTML={{ __html: post.html }} />
         <div>
           {previousSlug ? <Link to={previousSlug.slug}>{previousSlug.title}</Link> : null}
           <span>---</span>
@@ -76,6 +81,7 @@ export const query = graphql`
       html
       frontmatter {
         title
+        featureImageDescription
         # This part might be confusing. Every markdown has an featureImage data we can query for.
         # Using gatsby-plugin-sharp and gatsby-transformer-sharp we can convert this string
         # for a responsive image. If needed it will create multiple, optimized versions of the same

@@ -19,7 +19,6 @@ interface Props {
 }
 
 const BlogIndexTemplate = (props: Props): JSX.Element => {
-  console.log(props);
   const { data } = props;
   const articleList = data.allMarkdownRemark.edges.map((node: Node) => {
     const frontmatter = get(node, 'node.frontmatter');
@@ -45,7 +44,7 @@ export default BlogIndexTemplate;
 
 export const query = graphql`
   query {
-    allMarkdownRemark(sort: { fields: frontmatter___date }) {
+    allMarkdownRemark(sort: { fields: frontmatter___date, order: DESC }) {
       edges {
         node {
           frontmatter {
